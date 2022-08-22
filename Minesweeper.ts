@@ -55,7 +55,7 @@ export default class Minesweeper {
             this._canvas.drawLine(col * this.cellWidth, 0, col * this.cellWidth, this._canvas.height, "white");
         }
 
-        for (let row = 1; row < this._board.cols; ++row) {
+        for (let row = 1; row < this._board.rows; ++row) {
             this._canvas.drawLine(0, row * this.cellHeight, this._canvas.width, row * this.cellHeight, "white");
         }
 
