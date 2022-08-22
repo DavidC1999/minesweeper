@@ -3,8 +3,6 @@ export default class Canvas {
 
     private _ctx: CanvasRenderingContext2D;
 
-    private _temp;
-
     constructor(width: number, height: number) {
         this._elem = document.createElement('canvas');
         this._elem.width = width;
@@ -26,6 +24,22 @@ export default class Canvas {
         return this._elem.width;
     }
 
+    public pushContext() {
+        this._ctx.save();
+    }
+
+    public translate(x: number, y: number) {
+        this._ctx.translate(x, y);
+    }
+
+    public scale(amt: number) {
+        this._ctx.scale(amt, amt);
+    }
+
+    public popContext() {
+        this._ctx.restore();
+    }
+
     public clear() {
         this._ctx.clearRect(0, 0, this._elem.width, this._elem.height);
     }
@@ -37,12 +51,12 @@ export default class Canvas {
         this._ctx.fill();
     }
 
-    public drawLine(x1: number, y1: number, x2: number, y2: number, color: string) {
+    public drawLine(x1: number, y1: number, x2: number, y2: number, color: string, width: number) {
         this._ctx.beginPath();
         this._ctx.moveTo(x1, y1);
         this._ctx.lineTo(x2, y2);
         this._ctx.strokeStyle = color;
-        this._ctx.lineWidth = 2;
+        this._ctx.lineWidth = width;
         this._ctx.stroke();
     }
 

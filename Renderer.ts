@@ -8,6 +8,10 @@ export default class Renderer {
     private _cellWidth: number;
     private _cellHeight: number;
 
+    private _offsetX: number = 0;
+    private _offsetY: number = 0;
+    private _zoom: number = 1;
+
     constructor(canvas: Canvas, minesweeper: Minesweeper) {
         this._canvas = canvas;
         this._minesweeper = minesweeper;
@@ -16,24 +20,62 @@ export default class Renderer {
         this._cellHeight = canvas.height / minesweeper.board.rows;
     }
 
-    public mouseCoordsToRowAndCol(x: number, y: number): [number, number] {
+    public addOffsetX(amt: number) {
+        this._offsetX += amt;
+    }
+
+    public addOffsetY(amt: number) {
+        this._offsetY += amt;
+    }
+
+    public zoom(amt: number) {
+        this._zoom += amt;
+
+        var rect = this._canvas.elem.getBoundingClientRect();
+        let canvasCenterY = rect.top + rect.height / 2;
+        let canvasCenterX = rect.left + rect.width / 2;
+
+        let [boardX, boardY] = this.pageCoordsToBoardCoords(canvasCenterX, canvasCenterY);
+
+        let deltaX = (boardX * (1+amt)) - boardX;
+        let deltaY = (boardY * (1+amt)) - boardY;
+
+        this.addOffsetX(-deltaX);
+        this.addOffsetY(-deltaY);
+    }
+
+    public pageCoordsToBoardCoords(x: number, y: number): [number, number] {
         var rect = this._canvas.elem.getBoundingClientRect();
         let canvasX = x - rect.left;
         let canvasY = y - rect.top;
+
+        canvasX -= this._offsetX;
+        canvasY -= this._offsetY;
+        canvasX /= this._zoom;
+        canvasY /= this._zoom;
+
+        return [canvasX, canvasY];
+    }
+
+    public coordsToRowAndCol(x: number, y: number): [number, number] {
+        let [canvasX, canvasY] = this.pageCoordsToBoardCoords(x, y);
         return [Math.floor(canvasY / this._cellHeight), Math.floor(canvasX / this._cellWidth)];
     }
 
     public draw() {
-
         this._canvas.clear();
+
+        this._canvas.pushContext();
+        this._canvas.translate(this._offsetX, this._offsetY);
+        this._canvas.scale(this._zoom);
 
         // draw lines:
         for (let col = 1; col < this._minesweeper.board.cols; ++col) {
-            this._canvas.drawLine(col * this._cellWidth, 0, col * this._cellWidth, this._canvas.height, "white");
+            this._canvas.drawLine(col * this._cellWidth, 0, col * this._cellWidth, this._canvas.height, "white", 2/this._zoom);
         }
 
         for (let row = 1; row < this._minesweeper.board.rows; ++row) {
-            this._canvas.drawLine(0, row * this._cellHeight, this._canvas.width, row * this._cellHeight, "white");
+            this._canvas.drawLine(0, row * this._cellHeight, this._canvas.width, row * this._cellHeight, "white", 2/this._zoom);
         }
 
         for (let row = 0; row < this._minesweeper.board.rows; ++row) {
@@ -41,12 +83,14 @@ export default class Renderer {
                 this.drawCell(row, col);
             }
         }
+
+        this._canvas.popContext();
     }
 
     private drawCell(row: number, col: number) {
         let shouldDrawFlag = true;
         if (!this._minesweeper.board.isVisible(row, col)) {
-            const offset = 5;
+            const offset = this._zoom/5;
             let x = (col * this._cellWidth) + offset;
             let y = (row * this._cellHeight) + offset;
             let w = this._cellWidth - offset * 2;

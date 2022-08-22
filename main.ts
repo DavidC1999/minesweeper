@@ -1,4 +1,5 @@
 import Canvas from "./Canvas"
+import addEventListeners, { EventInfo } from "./eventlisteners";
 import Minesweeper, { GameState } from "./Minesweeper";
 import Renderer from "./Renderer";
 import Settings from "./Settings";
@@ -24,10 +25,11 @@ document.body.appendChild(canvas.elem);
 let minesweeper: Minesweeper, renderer: Renderer;
 resetGame();
 
-canvas.elem.addEventListener("mouseup", (e) => {
-    let [row, col] = renderer.mouseCoordsToRowAndCol(e.clientX, e.clientY);
 
-    switch (e.button) {
+function click(event: MouseEvent) {
+    let [row, col] = renderer.coordsToRowAndCol(event.clientX, event.clientY);
+
+    switch (event.button) {
         case 0: // left
             minesweeper.click(row, col);
             break;
@@ -44,9 +46,25 @@ canvas.elem.addEventListener("mouseup", (e) => {
     } else if (minesweeper.state == GameState.Won) {
         drawWon();
     }
-});
+}
 
+function moveCanvas(x: number, y: number) {
+    renderer.addOffsetX(x);
+    renderer.addOffsetY(y);
+    renderer.draw();
+}
 
+function zoomCanvas(amt: number) {
+    renderer.zoom(amt);
+    renderer.draw();
+}
+
+let eventInfo = new EventInfo;
+eventInfo.canvas = canvas;
+eventInfo.onCanvasClick = click;
+eventInfo.moveCanvas = moveCanvas;
+eventInfo.zoomCanvas = zoomCanvas;
+addEventListeners(eventInfo);
 
 function drawLost() {
     let modal: HTMLDivElement = document.querySelector(".lose-modal");
@@ -84,7 +102,7 @@ declare global {
 }
 window.resetGame = resetGame;
 window.showSettings = Settings.show;
-window.hideSettings = ()=> {
+window.hideSettings = () => {
     Settings.hide();
     resetGame();
 }
