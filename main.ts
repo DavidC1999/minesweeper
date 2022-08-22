@@ -14,10 +14,8 @@ if (canvasHeight > window.innerHeight) {
 let canvas = new Canvas(canvasWidth, canvasHeight);
 document.body.appendChild(canvas.elem);
 
-let minesweeper = new Minesweeper(Settings.rows, Settings.cols, Settings.mines);
-
-let renderer = new Renderer(canvas, minesweeper);
-renderer.draw();
+let minesweeper: Minesweeper, renderer: Renderer;
+resetGame();
 
 canvas.elem.addEventListener("mouseup", (e) => {
     let [row, col] = renderer.mouseCoordsToRowAndCol(e.clientX, e.clientY);
@@ -59,6 +57,7 @@ function resetGame() {
     modal.style.display = "none";
 
     minesweeper = new Minesweeper(Settings.rows, Settings.cols, Settings.mines);
+    renderer = new Renderer(canvas, minesweeper);
     renderer.draw();
 }
 
