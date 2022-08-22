@@ -31,6 +31,9 @@ export default class Renderer {
     public zoom(amt: number) {
         this._zoom += amt;
 
+        if(this._zoom < 0.1) this._zoom = 0.1;
+        else if (this._zoom > 10) this._zoom = 10;
+
         var rect = this._canvas.elem.getBoundingClientRect();
         let canvasCenterY = rect.top + rect.height / 2;
         let canvasCenterX = rect.left + rect.width / 2;

@@ -26,16 +26,13 @@ let minesweeper: Minesweeper, renderer: Renderer;
 resetGame();
 
 
-function click(event: MouseEvent) {
-    let [row, col] = renderer.coordsToRowAndCol(event.clientX, event.clientY);
+function click(alternate: boolean, x: number, y: number) {
+    let [row, col] = renderer.coordsToRowAndCol(x, y);
 
-    switch (event.button) {
-        case 0: // left
-            minesweeper.click(row, col);
-            break;
-        case 2: // right
-            minesweeper.alternateClick(row, col);
-            break;
+    if (alternate) {
+        minesweeper.alternateClick(row, col);
+    } else {
+        minesweeper.click(row, col);
     }
 
     renderer.draw();

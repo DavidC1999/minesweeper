@@ -4,6 +4,7 @@
   },
   "scripts": {
     "start": "parcel index.html",
-    "build": "rm -rf dist && parcel build index.html --no-source-maps"
+    "build": "rm -rf dist && rm -rf .parcel-cache && parcel build index.html --no-source-maps",
+    "testbuild": "rm -rf dist && rm -rf .parcel-cache &&  parcel build index.html --public-url '/test'"
   }
 }

@@ -9,6 +9,24 @@ let keyTimers = {
 
 let mouseDown = false;
 let mouseDragged = false;
+
+enum TouchType {
+    None,
+    Tap,
+    Drag,
+    Pinch,
+    Hold,
+};
+
+let touchType = TouchType.None;
+let prevPinchDist = 0;
+let touchStartX = 0;
+let touchStartY = 0;
+let touchPrevX = 0;
+let touchPrevY = 0;
+let longPressTimer: number;
+
+
 export default function addEventListeners(info: EventInfo) {
     document.addEventListener("mousedown", () => {
         mouseDown = true;
@@ -27,15 +45,79 @@ export default function addEventListeners(info: EventInfo) {
         mouseDown = false;
 
         if (!mouseDragged) {
-            info.onCanvasClick(e);
+            info.onCanvasClick(e.button == 2, e.clientX, e.clientY);
             return;
         }
     });
 
+    document.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+
+        if (e.touches.length == 2) {
+            touchType = TouchType.Pinch;
+            prevPinchDist = Math.hypot(
+                e.touches[0].pageX - e.touches[1].pageX,
+                e.touches[0].pageY - e.touches[1].pageY);
+        } else {
+            touchType = TouchType.Tap;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchPrevX = touchStartX;
+            touchPrevY = touchStartY;
+
+            longPressTimer = setTimeout(() => {
+                if (touchType == TouchType.Tap) {
+                    touchType = TouchType.Hold;
+                    window.navigator.vibrate([100]);
+
+                    let original = info.canvas.elem.style.outline;
+                    info.canvas.elem.style.outline = "1px solid red";
+                    setTimeout(() => {
+                        info.canvas.elem.style.outline = original;
+                    }, 100);
+                }
+            }, 300);
+        }
+    });
+
+    document.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+
+        clearTimeout(longPressTimer);
+
+        if (touchType == TouchType.Pinch) {
+            let pinchDist = Math.hypot(
+                e.touches[0].pageX - e.touches[1].pageX,
+                e.touches[0].pageY - e.touches[1].pageY);
+
+            let delta = prevPinchDist - pinchDist;
+            info.zoomCanvas(delta / -200);
+            prevPinchDist = pinchDist;
+        } else if (touchType != TouchType.Hold) {
+            touchType = TouchType.Drag;
+            let touch = e.touches[0];
+            let deltaX = touch.clientX - touchPrevX;
+            let deltaY = touch.clientY - touchPrevY;
+
+            info.moveCanvas(deltaX, deltaY);
+
+            touchPrevX = touch.clientX;
+            touchPrevY = touch.clientY;
+        }
+    });
+
+    document.addEventListener("touchend", (e) => {
+        clearTimeout(longPressTimer);
+
+        if ((touchType == TouchType.Tap || touchType == TouchType.Hold)) {
+            info.onCanvasClick(touchType == TouchType.Hold, touchStartX, touchStartY);
+        }
+
+        touchType = TouchType.None;
+    });
+
     document.addEventListener("wheel", (e) => {
-        console.log(e.deltaY);
-        
-        if(e.deltaY < 0) {
+        if (e.deltaY < 0) {
             info.zoomCanvas(0.1);
         } else {
             info.zoomCanvas(-0.1);
@@ -90,7 +172,7 @@ export default function addEventListeners(info: EventInfo) {
 
 export class EventInfo {
     public canvas: Canvas;
-    public onCanvasClick: (e: MouseEvent) => void;
+    public onCanvasClick: (alternate: boolean, x: number, y: number) => void;
     public moveCanvas: (x: number, y: number) => void;
     public zoomCanvas: (amt: number) => void;
 }
