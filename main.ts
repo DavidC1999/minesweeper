@@ -93,12 +93,12 @@ function displayMinesLeft() {
 declare global {
     interface Window {
         resetGame: any,
-        showSettings: any,
+        toggleSettings: any,
         hideSettings: any
     }
 }
 window.resetGame = resetGame;
-window.showSettings = Settings.show;
+window.toggleSettings = Settings.toggle;
 window.hideSettings = () => {
     Settings.hide();
     resetGame();
