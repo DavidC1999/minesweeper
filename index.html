@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper</title>
+    <script src="main.ts" type="module" defer></script>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .preload {
+            display: none;
+        }
+
+        .lose-modal {
+            display: none;
+            position: absolute;
+            width: 30vw;
+            left:50%;
+            top: 50%;
+
+            background-color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            transform: translate(-50%, -50%);
+        }
+
+        .lose-modal h1 {
+            color: red;
+        }
+
+        .win-modal {
+            display: none;
+            position: absolute;
+            width: 30vw;
+            left:50%;
+            top: 50%;
+
+            background-color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            transform: translate(-50%, -50%);
+        }
+
+        .win-modal h1 {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="lose-modal">
+        <h1>OOPS!</h1>
+        <p>That did not go as planned...</p>
+        <p>Click <a href="javascript:resetGame()">here</a> to start anew</p>
+    </div>
+    <div class="win-modal">
+        <h1>You did it!</h1>
+        <p>All the mines have been cleared</p>
+        <p>Click <a href="javascript:resetGame()">here</a> to start anew</p>
+    </div>
+    <div class="preload">
+        <img id="img-flag" src="assets/flag.png">
+    </div>
+</body>
+</html>

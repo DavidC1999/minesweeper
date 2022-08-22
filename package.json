@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "rm -rf dist && parcel build index.html --no-source-maps"
+  }
+}
