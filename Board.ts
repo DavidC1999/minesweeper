@@ -61,6 +61,16 @@ export default class Board {
         return output;
     }
 
+    public getFlagAmt(): number {
+        let output = 0;
+        for(let row = 0; row < this._rows; ++row) {
+            for(let col = 0; col < this._cols; ++col) {
+                if(this.isFlag(row, col)) ++output;
+            }
+        }
+        return output;
+    }
+
     public toggleFlag(row: number, col: number) {
         this._board[row][col].isFlag = !this._board[row][col].isFlag;
     }

@@ -9,6 +9,12 @@ body {
     align-items: center;
 }
 
+.bar {
+    color: white;
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .preload {
     display: none;
 }

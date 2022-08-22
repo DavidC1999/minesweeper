@@ -11,7 +11,10 @@
 </head>
 
 <body>
-    <a href="javascript:showSettings()">Settings</a>
+    <div class="bar">
+        <a href="javascript:showSettings()" id="settings-button">Settings</a>
+        <span id="mines-left-hint"><span id="mines-left-value">0</span> mines left</span>
+    </div>
     <div class="settings-modal">
         <h1>Settings</h1>
         <form action="#" class="settings-form">
