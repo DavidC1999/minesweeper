@@ -1,5 +1,6 @@
 import Canvas from "./Canvas"
 import Minesweeper, { GameState } from "./Minesweeper";
+import Settings from "./Settings";
 
 let canvasWidth = Math.min(window.innerWidth - 20, 800);
 let canvasHeight = canvasWidth;
@@ -13,7 +14,7 @@ let canvas = new Canvas(canvasWidth, canvasHeight);
 
 document.body.appendChild(canvas.elem);
 
-let minesweeper = new Minesweeper(20, 20, canvas, 40);
+let minesweeper = new Minesweeper(Settings.rows, Settings.cols, canvas, Settings.mines);
 minesweeper.draw();
 
 canvas.elem.addEventListener("mouseup", (e) => {
@@ -32,10 +33,12 @@ canvas.elem.addEventListener("mouseup", (e) => {
 
     if (minesweeper.state == GameState.Lost) {
         drawLost();
-    } else if(minesweeper.state == GameState.Won) {
+    } else if (minesweeper.state == GameState.Won) {
         drawWon();
     }
 });
+
+
 
 function drawLost() {
     let modal: HTMLDivElement = document.querySelector(".lose-modal");
@@ -53,14 +56,23 @@ function resetGame() {
     modal = document.querySelector(".win-modal");
     modal.style.display = "none";
 
-    minesweeper = new Minesweeper(20, 20, canvas, 40);
+    minesweeper = new Minesweeper(Settings.rows, Settings.cols, canvas, Settings.mines);
     minesweeper.draw();
 }
 
 declare global {
-    interface Window {resetGame:any}
+    interface Window {
+        resetGame: any,
+        showSettings: any,
+        hideSettings: any
+    }
 }
 window.resetGame = resetGame;
+window.showSettings = Settings.show;
+window.hideSettings = ()=> {
+    Settings.hide();
+    resetGame();
+}
 
 function mouseCoordsToRowAndCol(minesweeper: Minesweeper, x: number, y: number): [number, number] {
     var rect = canvas.elem.getBoundingClientRect();
