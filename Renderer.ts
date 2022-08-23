@@ -93,11 +93,12 @@ export default class Renderer {
     private drawCell(row: number, col: number) {
         let shouldDrawFlag = true;
         if (!this._minesweeper.board.isVisible(row, col)) {
-            const offset = this._zoom/5;
-            let x = (col * this._cellWidth) + offset;
-            let y = (row * this._cellHeight) + offset;
-            let w = this._cellWidth - offset * 2;
-            let h = this._cellHeight - offset * 2;
+            const offsetX = this._cellWidth * 0.1;
+            const offsetY = this._cellHeight * 0.1;
+            let x = (col * this._cellWidth) + offsetX;
+            let y = (row * this._cellHeight) + offsetY;
+            let w = this._cellWidth - offsetX * 2;
+            let h = this._cellHeight - offsetY * 2;
 
             this._canvas.drawRect(x, y, w, h, 'gray');
         } else if (this._minesweeper.board.isMine(row, col)) {
