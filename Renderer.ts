@@ -31,8 +31,15 @@ export default class Renderer {
     public zoom(amt: number) {
         this._zoom += amt;
 
-        if(this._zoom < 0.1) this._zoom = 0.1;
-        else if (this._zoom > 10) this._zoom = 10;
+        if (this._zoom <= 0.1) {
+            this._zoom = 0.1;
+            return;
+        }
+
+        if (this._zoom >= 10) {
+            this._zoom = 10;
+            return
+        }
 
         var rect = this._canvas.elem.getBoundingClientRect();
         let canvasCenterY = rect.top + rect.height / 2;
@@ -40,8 +47,8 @@ export default class Renderer {
 
         let [boardX, boardY] = this.pageCoordsToBoardCoords(canvasCenterX, canvasCenterY);
 
-        let deltaX = (boardX * (1+amt)) - boardX;
-        let deltaY = (boardY * (1+amt)) - boardY;
+        let deltaX = (boardX * (1 + amt)) - boardX;
+        let deltaY = (boardY * (1 + amt)) - boardY;
 
         this.addOffsetX(-deltaX);
         this.addOffsetY(-deltaY);
@@ -74,11 +81,11 @@ export default class Renderer {
 
         // draw lines:
         for (let col = 1; col < this._minesweeper.board.cols; ++col) {
-            this._canvas.drawLine(col * this._cellWidth, 0, col * this._cellWidth, this._canvas.height, "white", 2/this._zoom);
+            this._canvas.drawLine(col * this._cellWidth, 0, col * this._cellWidth, this._canvas.height, "white", 2 / this._zoom);
         }
 
         for (let row = 1; row < this._minesweeper.board.rows; ++row) {
-            this._canvas.drawLine(0, row * this._cellHeight, this._canvas.width, row * this._cellHeight, "white", 2/this._zoom);
+            this._canvas.drawLine(0, row * this._cellHeight, this._canvas.width, row * this._cellHeight, "white", 2 / this._zoom);
         }
 
         for (let row = 0; row < this._minesweeper.board.rows; ++row) {
