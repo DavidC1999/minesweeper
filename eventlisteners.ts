@@ -68,7 +68,7 @@ export default function addEventListeners(info: EventInfo) {
             longPressTimer = setTimeout(() => {
                 if (touchType == TouchType.Tap) {
                     touchType = TouchType.Hold;
-                    window.navigator.vibrate([100]);
+                    window.navigator.vibrate([50]);
 
                     let original = info.canvas.elem.style.outline;
                     info.canvas.elem.style.outline = "1px solid red";
