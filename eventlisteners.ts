@@ -25,6 +25,7 @@ let touchStartY = 0;
 let touchPrevX = 0;
 let touchPrevY = 0;
 let longPressTimer: number;
+let disableTouches = false;
 
 
 export default function addEventListeners(info: EventInfo) {
@@ -52,6 +53,8 @@ export default function addEventListeners(info: EventInfo) {
 
     document.addEventListener("touchstart", (e) => {
         e.preventDefault();
+
+        if(disableTouches) return;
 
         if (e.touches.length == 2) {
             touchType = TouchType.Pinch;
@@ -83,6 +86,8 @@ export default function addEventListeners(info: EventInfo) {
     document.addEventListener("touchmove", (e) => {
         e.preventDefault();
 
+        if(disableTouches) return;
+
         clearTimeout(longPressTimer);
 
         if (touchType == TouchType.Pinch) {
@@ -111,6 +116,14 @@ export default function addEventListeners(info: EventInfo) {
 
         if ((touchType == TouchType.Tap || touchType == TouchType.Hold)) {
             info.onCanvasClick(touchType == TouchType.Hold, touchStartX, touchStartY);
+        }
+
+        // avoid weird movements of the canvas
+        if(touchType == TouchType.Pinch) {
+            disableTouches = true;
+            setTimeout(() => {
+                disableTouches = false;
+            }, 200);
         }
 
         touchType = TouchType.None;
