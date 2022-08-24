@@ -26,7 +26,6 @@ document.body.appendChild(canvas.elem);
 // start the game
 let minesweeper: Minesweeper, renderer: Renderer;
 let image = document.getElementById("img-flag") as HTMLImageElement;
-console.log("Image load already complete: ", image.complete);
 
 if (image.complete) { // if the image has already loaded
     resetGame();
@@ -110,21 +109,16 @@ function generateBoard(forceNewBoard = false) {
 }
 
 function resetGame(forceNewBoard = false) {
-    console.log("resetting game");
-
     let modal: HTMLDivElement = document.querySelector(".lose-modal");
     modal.style.display = "none";
     modal = document.querySelector(".win-modal");
     modal.style.display = "none";
 
     let board = generateBoard(forceNewBoard);
-    console.log("generated board");
 
     minesweeper = new Minesweeper(board);
     renderer = new Renderer(canvas, minesweeper);
-    console.log("drawing");
     renderer.draw();
-    console.log("draw called worked");
 
     displayMinesLeft();
 }
