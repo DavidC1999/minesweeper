@@ -27,6 +27,10 @@ export default class Settings {
     public static get mines(): number {
         return parseInt(Settings.elem_mines.value);
     }
+
+    public static isOpen(): boolean {
+        return Settings.modal.style.display == "block";
+    }
     
     public static toggle() {
         Settings.modal.style.display = Settings.modal.style.display == "block" ? "none" : "block";

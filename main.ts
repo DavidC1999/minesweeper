@@ -25,10 +25,20 @@ document.body.appendChild(canvas.elem);
 
 // start the game
 let minesweeper: Minesweeper, renderer: Renderer;
-document.getElementById("img-flag").onload = () => resetGame();
+let image = document.getElementById("img-flag") as HTMLImageElement;
+console.log("Image load already complete: ", image.complete);
 
+if (image.complete) { // if the image has already loaded
+    resetGame();
+} else {
+    image.addEventListener("load", () => { // if the image has not loaded we wait for it to load
+        resetGame();
+    });
+}
 
 function click(alternate: boolean, x: number, y: number) {
+    if (Settings.isOpen()) return;
+
     let [row, col] = renderer.coordsToRowAndCol(x, y);
 
     if (alternate) {
@@ -52,12 +62,16 @@ function click(alternate: boolean, x: number, y: number) {
 }
 
 function moveCanvas(x: number, y: number) {
+    if (Settings.isOpen()) return;
+
     renderer.addOffsetX(x);
     renderer.addOffsetY(y);
     renderer.draw();
 }
 
 function zoomCanvas(amt: number) {
+    if (Settings.isOpen()) return;
+
     renderer.zoom(amt);
     renderer.draw();
 }
@@ -96,15 +110,22 @@ function generateBoard(forceNewBoard = false) {
 }
 
 function resetGame(forceNewBoard = false) {
+    console.log("resetting game");
+
     let modal: HTMLDivElement = document.querySelector(".lose-modal");
     modal.style.display = "none";
     modal = document.querySelector(".win-modal");
     modal.style.display = "none";
 
     let board = generateBoard(forceNewBoard);
+    console.log("generated board");
+
     minesweeper = new Minesweeper(board);
     renderer = new Renderer(canvas, minesweeper);
+    console.log("drawing");
     renderer.draw();
+    console.log("draw called worked");
+
     displayMinesLeft();
 }
 
@@ -124,5 +145,5 @@ window.resetGame = resetGame;
 window.toggleSettings = Settings.toggle;
 window.hideSettings = () => {
     Settings.hide();
-    resetGame();
+    resetGame(true);
 }
