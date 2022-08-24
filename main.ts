@@ -1,5 +1,7 @@
+import Board from "./Board";
 import Canvas from "./Canvas"
 import addEventListeners, { EventInfo } from "./eventlisteners";
+import LocalStorage from "./LocalStorage";
 import Minesweeper, { GameState } from "./Minesweeper";
 import Renderer from "./Renderer";
 import Settings from "./Settings";
@@ -23,7 +25,7 @@ document.body.appendChild(canvas.elem);
 
 // start the game
 let minesweeper: Minesweeper, renderer: Renderer;
-resetGame();
+document.getElementById("img-flag").onload = () => resetGame();
 
 
 function click(alternate: boolean, x: number, y: number) {
@@ -35,13 +37,17 @@ function click(alternate: boolean, x: number, y: number) {
         minesweeper.click(row, col);
     }
 
+    LocalStorage.setBoard(minesweeper.board);
+
     renderer.draw();
     displayMinesLeft();
 
     if (minesweeper.state == GameState.Lost) {
         drawLost();
+        LocalStorage.removeBoard();
     } else if (minesweeper.state == GameState.Won) {
         drawWon();
+        LocalStorage.removeBoard();
     }
 }
 
@@ -73,13 +79,30 @@ function drawWon() {
     modal.style.display = "block";
 }
 
-function resetGame() {
+function generateBoard(forceNewBoard = false) {
+    let board = LocalStorage.getBoard();
+
+    if (forceNewBoard || board == null) {
+        let newBoard = new Board(Settings.rows, Settings.cols, Settings.mines);
+        LocalStorage.setBoard(newBoard);
+        return newBoard;
+    }
+
+    Settings.cols = board.cols;
+    Settings.rows = board.rows;
+    Settings.mines = board.mineAmt;
+
+    return board;
+}
+
+function resetGame(forceNewBoard = false) {
     let modal: HTMLDivElement = document.querySelector(".lose-modal");
     modal.style.display = "none";
     modal = document.querySelector(".win-modal");
     modal.style.display = "none";
 
-    minesweeper = new Minesweeper(Settings.rows, Settings.cols, Settings.mines);
+    let board = generateBoard(forceNewBoard);
+    minesweeper = new Minesweeper(board);
     renderer = new Renderer(canvas, minesweeper);
     renderer.draw();
     displayMinesLeft();

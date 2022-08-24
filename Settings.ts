@@ -4,12 +4,24 @@ export default class Settings {
     private static elem_rows: HTMLInputElement = document.querySelector("#setting-row");
     private static elem_mines: HTMLInputElement = document.querySelector("#setting-mines");
 
+    public static set cols(val: number) {
+        Settings.elem_cols.value = val.toString();
+    }
+
     public static get cols(): number {
         return parseInt(Settings.elem_cols.value);
     }
 
+    public static set rows(val: number) {
+        Settings.elem_rows.value = val.toString();
+    }
+
     public static get rows(): number {
         return parseInt(Settings.elem_rows.value);
+    }
+
+    public static set mines(val: number) {
+        Settings.elem_mines.value = val.toString();
     }
 
     public static get mines(): number {

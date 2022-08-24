@@ -13,7 +13,7 @@
 <body>
     <div class="bar">
         <a href="javascript:toggleSettings()" id="settings-button">Settings</a>
-        <a href="javascript:resetGame()" id="restart-button">Restart</a>
+        <a href="javascript:resetGame(true)" id="restart-button">Restart</a>
         <span id="mines-left-hint"><span id="mines-left-value">0</span> mines left</span>
     </div>
     <div class="settings-modal">
@@ -31,12 +31,12 @@
     <div class="lose-modal">
         <h1>OOPS!</h1>
         <p>That did not go as planned...</p>
-        <p>Click <a href="javascript:resetGame()">here</a> to start anew</p>
+        <p>Click <a href="javascript:resetGame(true)">here</a> to start anew</p>
     </div>
     <div class="win-modal">
         <h1>You did it!</h1>
         <p>All the mines have been cleared</p>
-        <p>Click <a href="javascript:resetGame()">here</a> to start anew</p>
+        <p>Click <a href="javascript:resetGame(true)">here</a> to start anew</p>
     </div>
     <div class="preload">
         <img id="img-flag" src="assets/flag.png">

@@ -8,10 +8,8 @@ export default class Minesweeper {
 
     private _state: GameState = GameState.Playing;
 
-    constructor(rows: number, cols: number, mineAmt: number) {
-
-        this._board = new Board(rows, cols, mineAmt);
-        this._mineAmt = mineAmt;
+    constructor(board: Board) {
+        this._board = board;
     }
 
     public get board() {
@@ -19,7 +17,7 @@ export default class Minesweeper {
     }
 
     public click(row: number, col: number) {
-        if(this._state != GameState.Playing) return;
+        if (this._state != GameState.Playing) return;
         if (this._board.isFlag(row, col)) return;
 
         this.recurseVisibility(row, col);
@@ -28,14 +26,14 @@ export default class Minesweeper {
             // player lost
             this._board.setAllVisible();
             this._state = GameState.Lost;
-        } else if(this._board.getInvisibleLeft() == this._mineAmt) {
+        } else if (this._board.getInvisibleLeft() == this._board.mineAmt) {
             // player won
             this._state = GameState.Won;
         }
     }
 
     public alternateClick(row: number, col: number) {
-        if(this._state != GameState.Playing) return;
+        if (this._state != GameState.Playing) return;
         this._board.toggleFlag(row, col);
     }
 
