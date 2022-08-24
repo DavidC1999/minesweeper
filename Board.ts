@@ -83,6 +83,7 @@ export default class Board {
 
     public setVisible(row: number, col: number) {
         this._board[row][col].isVisible = true;
+        this._board[row][col].isFlag = false;
     }
 
     public setAllVisible() {
